@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import useGameStore from "../store/gameStore";
 import GameCard from "../components/games/GameCard";
+import { AlertCircle } from "lucide-react";
 
 /**
  * HomePage Component
@@ -10,7 +11,7 @@ import GameCard from "../components/games/GameCard";
  * It uses the game store to fetch and display games with loading states.
  */
 const HomePage: React.FC = () => {
-  const { games, fetchGames, isLoading } = useGameStore();
+  const { games, fetchGames, isLoading, error } = useGameStore();
   const [searchTerm, setSearchTerm] = useState("");
   
   // Load games when component mounts
@@ -59,6 +60,14 @@ const HomePage: React.FC = () => {
             />
           </svg>
         </div>
+        
+        {/* API Error message */}
+        {error && (
+          <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg flex items-center text-yellow-800 dark:text-yellow-200">
+            <AlertCircle className="h-5 w-5 mr-2" />
+            <p>{error}</p>
+          </div>
+        )}
       </div>
       
       {/* Game grid */}
