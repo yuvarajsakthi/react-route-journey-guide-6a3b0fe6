@@ -4,10 +4,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { 
-  createBrowserRouter, 
-  RouterProvider, 
-  Navigate,
-  RouteObject
+  Routes,
+  Route,
+  Navigate
 } from "react-router-dom";
 
 // Import components and layouts
@@ -23,63 +22,28 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
-// Define routes using the RouteObject array pattern
-const routes: RouteObject[] = [
-  {
-    path: "/",
-    element: <RootLayout />,
-    children: [
-      {
-        index: true,
-        element: <HomePage />
-      },
-      {
-        path: "games/:gameId",
-        element: <GameDetailPage />
-      },
-      {
-        path: "profile",
-        element: (
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        )
-      }
-    ]
-  },
-  {
-    path: "/auth",
-    element: <AuthLayout />,
-    children: [
-      {
-        path: "login",
-        element: <LoginPage />
-      },
-      {
-        path: "register",
-        element: <RegisterPage />
-      },
-      {
-        index: true,
-        element: <Navigate to="/auth/login" replace />
-      }
-    ]
-  },
-  {
-    path: "*",
-    element: <NotFound />
-  }
-];
-
-// Create the router using createBrowserRouter
-const router = createBrowserRouter(routes);
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <Routes>
+        <Route path="/" element={<RootLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="games/:gameId" element={<GameDetailPage />} />
+          <Route path="profile" element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } />
+        </Route>
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
+          <Route index element={<Navigate to="/auth/login" replace />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
       <Toaster />
       <Sonner />
-      <RouterProvider router={router} />
     </TooltipProvider>
   </QueryClientProvider>
 );
